@@ -30,7 +30,9 @@ public class NumberTheory {
                 aValues[i] = prompt("a" + (i + 1) + ": ", s);
                 nValues[i] = prompt("n" + (i + 1) + ": ", 0, s);
             }
-            gauss(aValues, nValues).printTable();
+            Gauss gauss = gauss(aValues, nValues);
+            gauss.printTable();
+            gauss.printResult();
         } else if(algorithm == 3) {
             int a = prompt("a: ", s);
             int x = prompt("x: ", 0, s);

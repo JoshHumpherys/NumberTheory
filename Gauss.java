@@ -44,11 +44,20 @@ public class Gauss extends TabularAlgorithm {
                 rows.add(new int[]{aValues[i], n, m});
             }
         }
-        int product = 1;
-        for(int i = 0; i < nValues.length; i++) {
-            product *= nValues[i];
-        }
+        int product = calculateProduct(nValues);
         result = mod(sum, product);
+    }
+
+    private int calculateProduct(int[] array) {
+        int product = 1;
+        for(int i = 0; i < array.length; i++) {
+            product *= array[i];
+        }
+        return product;
+    }
+
+    void printResult() {
+        System.out.println("x\u2261 " + result + "(mod " + calculateProduct(nValues) + ")");
     }
 
     @Override
