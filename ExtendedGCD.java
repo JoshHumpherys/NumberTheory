@@ -28,7 +28,7 @@ public class ExtendedGCD extends TabularAlgorithm {
         }
         this.a = a;
         this.b = b;
-        rows.add(new int[]{0, 0, 0, 0, a, b, 1, 0, 0, 1});
+        rows.add(new int[]{0, 0, 0, 0, Math.abs(a), Math.abs(b), 1, 0, 0, 1});
     }
 
     void run() {
@@ -72,7 +72,7 @@ public class ExtendedGCD extends TabularAlgorithm {
     }
 
     void printCheck() {
-        System.out.println("(" + a + ")" + "(" + x + ") + (" + b + ")(" + y + ") = " + gcd);
+        System.out.println("(" + a + ")" + "(" + x * (a < 0 ? -1 : 1) + ") + (" + b + ")(" + y * (b < 0 ? -1 : 1) + ") = " + gcd);
     }
 
     int getGCD() {

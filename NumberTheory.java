@@ -28,7 +28,7 @@ public class NumberTheory {
             int[] nValues = new int[n];
             for(int i = 0; i < n; i++) {
                 aValues[i] = prompt("a" + (i + 1) + ": ", s);
-                nValues[i] = prompt("n" + (i + 1) + ": ", 0, s);
+                nValues[i] = prompt("n" + (i + 1) + ": ", 1, s);
             }
             Gauss gauss = gauss(aValues, nValues);
             gauss.printTable();
