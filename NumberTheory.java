@@ -32,7 +32,7 @@ public class NumberTheory {
                 aValues[i] = prompt("a" + (i + 1) + ": ", s);
                 nValues[i] = prompt("n" + (i + 1) + ": ", 0, s);
             }
-            System.out.println(gauss(aValues, nValues));
+            gauss(aValues, nValues).printTable();
         } else if(algorithm == 3) {
             int a = prompt("a: ", s);
             int x = prompt("x: ", 0, s);
@@ -73,21 +73,27 @@ public class NumberTheory {
         }
     }
 
+    private static int mod(int a, int b) {
+        return (a % b + b) % b;
+    }
+
     private static ExtendedGCD extendedGCD(int a, int b) {
         ExtendedGCD extendedGCD = new ExtendedGCD(a, b);
         extendedGCD.run();
         return extendedGCD;
     }
 
-    private static int gauss(int[] aValues, int[] nValues) {
-        return 0;
+    private static Gauss gauss(int[] aValues, int[] nValues) {
+        Gauss gauss = new Gauss(aValues, nValues);
+        gauss.run();
+        return gauss;
     }
 
     private static int modularExponentiation(int a, int x, int n) {
         return 0;
     }
 
-    private static class ExtendedGCD {
+    private static class ExtendedGCD extends TabularAlgorithm {
         int Q_INDEX = 0;
         int R_INDEX = 1;
         int X_INDEX = 2;
@@ -104,6 +110,7 @@ public class NumberTheory {
         int gcd;
         int x;
         int y;
+        String[] labels = new String[]{"q", "r", "x", "y", "a", "b", "x2", "x1", "y2", "y1"};
         ExtendedGCD(int a, int b) {
             rows = new ArrayList<>();
             if(Math.abs(a) < Math.abs(b)) {
@@ -121,7 +128,7 @@ public class NumberTheory {
                 int[] lastRow = getLastRow();
                 int[] newRow = new int[10];
                 newRow[Q_INDEX] = lastRow[A_INDEX] / lastRow[B_INDEX];
-                newRow[R_INDEX] = lastRow[A_INDEX] % lastRow[B_INDEX];
+                newRow[R_INDEX] = mod(lastRow[A_INDEX], lastRow[B_INDEX]);
                 newRow[X_INDEX] = lastRow[X2_INDEX] - newRow[Q_INDEX] * lastRow[X1_INDEX];
                 newRow[Y_INDEX] = lastRow[Y2_INDEX] - newRow[Q_INDEX] * lastRow[Y1_INDEX];
                 newRow[A_INDEX] = lastRow[B_INDEX];
@@ -145,66 +152,11 @@ public class NumberTheory {
 
         private boolean finished() {
             int[] lastRow = getLastRow();
-            return lastRow[Q_INDEX] != 0 && lastRow[R_INDEX] == 0;
+            return (lastRow[Q_INDEX] != 0 && lastRow[R_INDEX] == 0) || lastRow[B_INDEX] == 0;
         }
 
         private int[] getLastRow() {
             return rows.get(rows.size() - 1);
-        }
-
-        void printTable() {
-            int[] maxWidthOfColumns = new int[10];
-            for(int i = 0; i < 10; i++) {
-                int maxWidth = 0;
-                for(int j = 0; j < rows.size(); j++) {
-                    int[] currentRow = rows.get(j);
-                    int currentWidth = String.valueOf(rows.get(j)[i]).length();
-                    if(currentWidth > maxWidth) {
-                        maxWidth = currentWidth;
-                    }
-                }
-                maxWidthOfColumns[i] = maxWidth;
-            }
-            String[] spaces = new String[12];
-            spaces[0] = "";
-            for(int i = 1; i < 12; i++) {
-                spaces[i] = spaces[i - 1] + " ";
-            }
-            StringBuilder header = new StringBuilder();
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[0] - 1, 0)) + "q |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[1] - 1, 0)) + "r |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[2] - 1, 0)) + "x |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[3] - 1, 0)) + "y |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[4] - 1, 0)) + "a |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[5] - 1, 0)) + "b |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[6] - 2, 0)) + "x2 |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[7] - 2, 0)) + "x1 |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[8] - 2, 0)) + "y2 |");
-            header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[9] - 2, 0)) + "y1");
-            System.out.println(header);
-            StringBuilder dashes = new StringBuilder();
-            for(int i = 0; i < header.length(); i++) {
-                dashes.append("-");
-            }
-            System.out.println(dashes);
-            StringBuilder headerFormatBuilder = new StringBuilder();
-            for(int i = 0; i < 10; i++) {
-                headerFormatBuilder.append(" %" + maxWidthOfColumns[i] + "d " + (i != 9 ? "|" : ""));
-            }
-            headerFormatBuilder.append("%n");
-            String headerFormat = headerFormatBuilder.toString();
-            for(int i = 0; i < rows.size(); i++) {
-                int[] row = rows.get(i);
-                System.out.printf(headerFormat, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]);
-            }
-        }
-
-        private String getNumSpaces(String[] spaces, int n) {
-            StringBuilder space = new StringBuilder(spaces[Math.min(n, spaces.length - 1)]);
-            for(int i = spaces.length; i <= n; i++) {
-                space.append(" ");
-            }
-            return space.toString();
         }
 
         void printResult() {
@@ -225,6 +177,143 @@ public class NumberTheory {
 
         int getY() {
             return y;
+        }
+
+        int getX1() {
+            int[] lastRow = getLastRow();
+            return lastRow[X1_INDEX];
+        }
+
+        int getX2() {
+            int[] lastRow = getLastRow();
+            return lastRow[X2_INDEX];
+        }
+
+        @Override
+        protected String[] getLabels() {
+            return labels;
+        }
+
+        @Override
+        protected List<int[]> getRows() {
+            return rows;
+        }
+    }
+
+    private static class Gauss extends TabularAlgorithm {
+        int[] aValues;
+        int[] nValues;
+        List<int[]> rows;
+        int result;
+        String[] labels = new String[]{"a_i", "N_i", "M_i"};
+        Gauss(int[] aValues, int[] nValues) {
+            rows = new ArrayList<>();
+            this.aValues = new int[aValues.length];
+            this.nValues = new int[nValues.length];
+            System.arraycopy(aValues, 0, this.aValues, 0, aValues.length);
+            System.arraycopy(nValues, 0, this.nValues, 0, nValues.length);
+        }
+
+        void run() {
+            for(int i = 0; i < nValues.length; i++) {
+                for(int j = i + 1; j < nValues.length; j++) {
+                    if(extendedGCD(nValues[i], nValues[j]).getGCD() != 1) {
+                        System.out.println("Not all moduli are coprime.");
+                        result = -1;
+                    }
+                }
+            }
+            int sum = 0;
+            for(int i = 0; i < aValues.length; i++) {
+                if(aValues[i] != 0) {
+                    int n = 1;
+                    for(int j = 0; j < nValues.length; j++) {
+                        if(i != j) {
+                            n *= nValues[j];
+                        }
+                    }
+                    ExtendedGCD extendedGCD = extendedGCD(n, nValues[i]);
+                    int x = mod(extendedGCD.getX(), nValues[i]);
+                    int y = mod(extendedGCD.getY(), nValues[i]);
+                    int m = mod(extendedGCD.getX2() + extendedGCD.getX1(), nValues[i]);
+                    sum += aValues[i] * n * m;
+                    rows.add(new int[]{aValues[i], n, m});
+                }
+            }
+            int product = 1;
+            for(int i = 0; i < nValues.length; i++) {
+                product *= nValues[i];
+            }
+            result = mod(sum, product);
+        }
+
+        @Override
+        protected String[] getLabels() {
+            return labels;
+        }
+
+        @Override
+        protected List<int[]> getRows() {
+            return rows;
+        }
+    }
+
+    private static abstract class TabularAlgorithm {
+        protected String[] labels;
+        protected List<int[]> rows;
+
+        protected abstract String[] getLabels();
+        protected abstract List<int[]> getRows();
+
+        protected final void printTable() {
+            String[] labels = getLabels();
+            List<int[]> rows = getRows();
+            int[] maxWidthOfColumns = new int[labels.length];
+            for(int i = 0; i < labels.length; i++) {
+                int maxWidth = labels[i].length();
+                for(int j = 0; j < rows.size(); j++) {
+                    int currentWidth = String.valueOf(rows.get(j)[i]).length();
+                    if(currentWidth > maxWidth) {
+                        maxWidth = currentWidth;
+                    }
+                }
+                maxWidthOfColumns[i] = maxWidth;
+            }
+            String[] spaces = new String[12];
+            spaces[0] = "";
+            for(int i = 1; i < 12; i++) {
+                spaces[i] = spaces[i - 1] + " ";
+            }
+            StringBuilder header = new StringBuilder();
+            for(int i = 0; i < labels.length; i++) {
+                header.append(" " + getNumSpaces(spaces, Math.max(maxWidthOfColumns[i] - labels[i].length(), 0)) + labels[i] + " " + (i == labels.length - 1 ? "" : "|"));
+            }
+            System.out.println(header);
+            StringBuilder dashes = new StringBuilder();
+            for(int i = 0; i < header.length(); i++) {
+                dashes.append("-");
+            }
+            System.out.println(dashes);
+            StringBuilder headerFormatBuilder = new StringBuilder();
+            for(int i = 0; i < labels.length; i++) {
+                headerFormatBuilder.append(" %" + maxWidthOfColumns[i] + "d " + (i != labels.length - 1 ? "|" : ""));
+            }
+            headerFormatBuilder.append("%n");
+            String headerFormat = headerFormatBuilder.toString();
+            for(int i = 0; i < rows.size(); i++) {
+                int[] row = rows.get(i);
+                for(int j = 0; j < row.length; j++) {
+                    System.out.printf(" %" + maxWidthOfColumns[j] + "d " + (j != labels.length - 1 ? "|" : "%n"), row[j]);
+                }
+            }
+        }
+
+        private static String getNumSpaces(String[] spaces, int n) {
+            StringBuilder space = new StringBuilder(spaces[Math.min(n, spaces.length - 1)]);
+            for(int i = spaces.length; i <= n; i++) {
+                space.append(" ");
+            }
+            return space.toString();
         }
     }
 }
