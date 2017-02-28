@@ -23,6 +23,7 @@ public class Gauss extends TabularAlgorithm {
                 if(extendedGCD.getGCD() != 1) {
                     System.out.println("Not all moduli are coprime.");
                     result = -1;
+                    return;
                 }
             }
         }
@@ -39,7 +40,7 @@ public class Gauss extends TabularAlgorithm {
                 extendedGCD.run();
                 int x = mod(extendedGCD.getX(), nValues[i]);
                 int y = mod(extendedGCD.getY(), nValues[i]);
-                int m = mod(extendedGCD.getX2() + extendedGCD.getX1(), nValues[i]);
+                int m = mod(extendedGCD.inverseAModB(), nValues[i]);
                 sum += aValues[i] * n * m;
                 rows.add(new int[]{aValues[i], n, m});
             }
@@ -57,7 +58,16 @@ public class Gauss extends TabularAlgorithm {
     }
 
     void printResult() {
-        System.out.println("x\u2261 " + result + "(mod " + calculateProduct(nValues) + ")");
+        if(result != -1) {
+            System.out.println("x\u2261 " + result + "(mod " + calculateProduct(nValues) + ")");
+        }
+    }
+
+    @Override
+    protected void printTable() {
+        if(result != -1) {
+            super.printTable();
+        }
     }
 
     @Override

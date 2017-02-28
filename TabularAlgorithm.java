@@ -11,7 +11,7 @@ public abstract class TabularAlgorithm {
         return (a % b + b) % b;
     }
 
-    protected final void printTable() {
+    protected void printTable() {
         String[] labels = getLabels();
         List<int[]> rows = getRows();
         int[] maxWidthOfColumns = new int[labels.length];

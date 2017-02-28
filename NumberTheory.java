@@ -22,6 +22,7 @@ public class NumberTheory {
             extendedGCD.printTable();
             extendedGCD.printResult();
             extendedGCD.printCheck();
+            System.out.println("Inverse of " + a + " (mod " + b + ") is " + extendedGCD.inverseAModB());
         } else if(algorithm == 2) {
             int n = prompt("Number of congruences: ", 1, s);
             int[] aValues = new int[n];

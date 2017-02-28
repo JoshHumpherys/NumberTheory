@@ -12,6 +12,7 @@ public class ExtendedGCD extends TabularAlgorithm {
     int X1_INDEX = 7;
     int Y2_INDEX = 8;
     int Y1_INDEX = 9;
+    boolean swapped = false;
     List<int[]> rows;
     int a;
     int b;
@@ -25,6 +26,7 @@ public class ExtendedGCD extends TabularAlgorithm {
             int temp = a;
             a = b;
             b = temp;
+            swapped = true;
         }
         this.a = a;
         this.b = b;
@@ -73,6 +75,10 @@ public class ExtendedGCD extends TabularAlgorithm {
 
     void printCheck() {
         System.out.println("(" + a + ")" + "(" + x * (a < 0 ? -1 : 1) + ") + (" + b + ")(" + y * (b < 0 ? -1 : 1) + ") = " + gcd);
+    }
+
+    int inverseAModB() {
+        return mod(rows.get(rows.size() - 1)[swapped ? Y2_INDEX : X2_INDEX], swapped ? a : b);
     }
 
     int getGCD() {
